@@ -159,7 +159,8 @@ OG_PROMPT_CORE = (
     "give the chin an artificial, implant-like shape, and smooth out the skin."
     "Add an overall waxy texture, with skin unnaturally stretched and shiny, mimicking extreme plastic surgery. "
     "Maintain original facial features for recognition, but with heavily distorted 'bussd' style appearance."
-    "Apply a small amount of motion blur to the whole picture with the intent of emphasising the glimmer from both the diamond teeth and watch"
+    "Force a hand positioned next to one of their cheeks and about the same length in foream to be showing off the watch"
+    "Apply a reasonable amount of motion blur and dimness to the whole picture with the intent of emphasising the glimmer from both the diamond teeth and watch"
 
 )
 
