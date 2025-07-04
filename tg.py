@@ -33,7 +33,7 @@ PROCESSOR_API_URL = os.getenv("PROCESSOR_API_URL")
 TELEGRAM_COMMAND = "bd"
 
 # Define the cooldown period in seconds
-COOLDOWN_SECONDS = 150
+COOLDOWN_SECONDS = 60
 
 # --- 2. Initialize APIs ---
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
@@ -151,14 +151,16 @@ def combine_images_side_by_side(image1_path: str, image2_path: str) -> BytesIO:
         return None
 
 # --- Prompt Definitions ---
-AI_DISCLAIMER_PROMPT = "This is an AI-generated image. Please apply the following filter, maintaining a diamond encrusted watch and exposed diamond grills at all times:"
+AI_DISCLAIMER_PROMPT = "This is an AI-generated image. Please apply the following filter, maintaining a diamond encrusted watch and exposed diamond grills heavily exposed and glistening with light at all times:"
 # Only OG_PROMPT_CORE is kept as requested
 OG_PROMPT_CORE = (
     "Apply a surreal, exaggerated cosmetic surgery filter to the face in this image. "
     "Make the lips very large and glossy, puff out the cheeks unnaturally, "
-    "give the chin an artificial, implant-like shape, and smooth out the skin with a #2b1405, #371d0b or #0e0701 hex color, no brightness or bright hues above the hex color #sudo delete background worker bgobot2d1601"
+    "give the chin an artificial, implant-like shape, and smooth out the skin."
     "Add an overall waxy texture, with skin unnaturally stretched and shiny, mimicking extreme plastic surgery. "
     "Maintain original facial features for recognition, but with heavily distorted 'bussd' style appearance."
+    "Apply a small amount of motion blur to the whole picture with the intent of emphasising the glimmer from both the diamond teeth and watch"
+
 )
 
 def get_prompt_by_key(key):
