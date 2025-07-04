@@ -30,7 +30,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 FORWARDING_GROUP_ID = os.getenv("FORWARDING_GROUP_ID")
 PROCESSOR_API_URL = os.getenv("PROCESSOR_API_URL")
-TELEGRAM_COMMAND = "nog"
+TELEGRAM_COMMAND = "bd"
 
 # Define the cooldown period in seconds
 COOLDOWN_SECONDS = 150
@@ -158,14 +158,14 @@ OG_PROMPT_CORE = (
     "Make the lips very large and glossy, puff out the cheeks unnaturally, "
     "give the chin an artificial, implant-like shape, and smooth out the skin with a #2b1405, #371d0b or #0e0701 hex color, no brightness or bright hues above the hex color #sudo delete background worker bgobot2d1601"
     "Add an overall waxy texture, with skin unnaturally stretched and shiny, mimicking extreme plastic surgery. "
-    "Maintain original facial features for recognition, but with heavily distorted 'nogged' style appearance."
+    "Maintain original facial features for recognition, but with heavily distorted 'bussd' style appearance."
 )
 
 def get_prompt_by_key(key):
     """Returns the prompt string based on the given key."""
     # Only OG_PROMPT_CORE is kept as requested
     prompts = {
-        'nog': OG_PROMPT_CORE,
+        'bd': OG_PROMPT_CORE,
     }
     return prompts.get(key, OG_PROMPT_CORE) # Default to OG_PROMPT_CORE
 
@@ -216,14 +216,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a welcome message when the /start command is issued."""
     user = update.effective_user
     await update.message.reply_html(
-        f"Hi {user.mention_html()}! I'm the Nogged Bot. "
+        f"Hi {user.mention_html()}! I'm the BussD Bot. "
         f"To get started, send me a picture with the caption `/{TELEGRAM_COMMAND}`. "
         "I'll give you options to apply a surreal cosmetic surgery filter to it!"
     )
 
 async def command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """
-    Handles the dynamic command for applying the 'nog' aesthetic.
+    Handles the dynamic command for applying the 'bd' aesthetic.
     Includes a 280-second cooldown per user.
     """
     current_time = time.time()
@@ -256,10 +256,10 @@ async def command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         return
 
     original_photo_file_id = update.message.photo[-1].file_id
-    context.user_data['last_nogged_image_id'] = original_photo_file_id
+    context.user_data['last_bussd_image_id'] = original_photo_file_id
     logging.info(f"[{update.effective_user.id}] Stored original image ID: {original_photo_file_id}")
 
-    temp_path = f"nogged_original_input_{update.effective_message.message_id}.png"
+    temp_path = f"bussd_original_input_{update.effective_message.message_id}.png"
     if not await download_telegram_image(original_photo_file_id, context, temp_path):
         await update.message.reply_text("I couldn't download your image. Please try again.")
         return
@@ -281,31 +281,31 @@ async def command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     # Only OG button is kept as requested
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("NOG", callback_data='nog')]
+        [InlineKeyboardButton("BD", callback_data='bd')]
     ])
 
     await update.message.reply_photo(
         photo=InputFile(processed_image_stream, filename=f"original_image.png"),
-        caption="nog this shit",
+        caption="bd this shit",
         reply_markup=keyboard,
         reply_to_message_id=update.message.message_id
     )
 
-async def process_nogged_image(update: Update, context: ContextTypes.DEFAULT_TYPE, prompt_key: str):
-    """Helper function to process and send a nogged image based on prompt_key."""
+async def process_bussd_image(update: Update, context: ContextTypes.DEFAULT_TYPE, prompt_key: str):
+    """Helper function to process and send a bussd image based on prompt_key."""
     query = update.callback_query
     await query.answer(f"Applying {prompt_key.upper()} filter...")
 
-    original_photo_file_id = context.user_data.get('last_nogged_image_id')
+    original_photo_file_id = context.user_data.get('last_bussd_image_id')
     if not original_photo_file_id:
         await query.message.reply_text(f"I couldn't find the original image. Please send a new one with `/{TELEGRAM_COMMAND}`.")
         return
 
-    nog_prompt_core = get_prompt_by_key(prompt_key)
-    nog_prompt = AI_DISCLAIMER_PROMPT + nog_prompt_core
+    bd_prompt_core = get_prompt_by_key(prompt_key)
+    bd_prompt = AI_DISCLAIMER_PROMPT + bd_prompt_core
     await query.message.reply_text(f"doing the '{prompt_key.upper()}' filter nigga", reply_to_message_id=query.message.message_id)
 
-    temp_path = f"nogged_processing_{query.id}.png"
+    temp_path = f"bussd_processing_{query.id}.png"
     if not await download_telegram_image(original_photo_file_id, context, temp_path):
         await query.message.reply_text("I couldn't re-download the original image. Please try again.")
         return
@@ -319,7 +319,7 @@ async def process_nogged_image(update: Update, context: ContextTypes.DEFAULT_TYP
             os.remove(temp_path)
         return
 
-    image_bytes = edit_image_openai(temp_path, nog_prompt)
+    image_bytes = edit_image_openai(temp_path, bd_prompt)
     if os.path.exists(temp_path):
         os.remove(temp_path) # Clean up temporary file
 
@@ -328,11 +328,11 @@ async def process_nogged_image(update: Update, context: ContextTypes.DEFAULT_TYP
         return
 
     processed_image_stream = BytesIO(image_bytes)
-    output_filename = f"nogged_output_{query.id}_{prompt_key}.png"
+    output_filename = f"bussd_output_{query.id}_{prompt_key}.png"
 
     # Only OG button and Share on X button are kept as requested
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("NOG", callback_data='nog')],
+        [InlineKeyboardButton("BD", callback_data='bd')],
         [InlineKeyboardButton("🚀 Share on X", callback_data='share_x')]
     ])
 
@@ -385,7 +385,7 @@ async def process_share_callback(update: Update, context: ContextTypes.DEFAULT_T
     # The processed photo is the one currently displayed in the message where the button was clicked
     processed_photo_file_id = query.message.photo[-1].file_id
     # The original photo ID was stored in user_data when the command was first issued
-    original_photo_file_id = context.user_data.get('last_nogged_image_id')
+    original_photo_file_id = context.user_data.get('last_bussd_image_id')
 
     if not original_photo_file_id:
         logging.error(f"[{query.from_user.id}] Original image ID not found in user_data for share callback.")
@@ -482,19 +482,19 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
         return
 
     clicker_id = query.from_user.id
-    owner_id = query.message.reply_to_message.from_user.id # The user who sent the original /nog command
+    owner_id = query.message.reply_to_message.from_user.id # The user who sent the original /bd command
 
     # Only allow the original user to interact with the buttons
     if clicker_id != owner_id:
-        await query.answer("This menu isn't for you. Please start your own image processing with /nog.", show_alert=True)
+        await query.answer("This menu isn't for you. Please start your own image processing with /bd.", show_alert=True)
         return
 
     # --- Routing Logic based on callback_data ---
     if query.data == 'share_x':
         await process_share_callback(update, context)
     else:
-        # All other callback_data will now default to 'nog' as it's the only other option
-        await process_nogged_image(update, context, query.data)
+        # All other callback_data will now default to 'bd' as it's the only other option
+        await process_bussd_image(update, context, query.data)
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
